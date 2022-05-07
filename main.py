@@ -4,12 +4,15 @@ import gtts
 from playsound import playsound
 
 r = sr.Recognizer()
-ACTIVATION_COMMAND = "Hello"
+ACTIVATION_COMMAND = "hello"
 
-def audio_to_text():
+def get_audio():
     with sr.Microphone() as source:
         print("Heyy")
         audio = r.listen(source)
+    return audio
+
+def get_text(audio):
     text = ""
     try:
         text = r.recognize_google(audio)
@@ -33,12 +36,16 @@ def play_sound(text):
 
 if __name__ == "__main__":
     while True:
-        command = audio_to_text()
+        audio = get_audio()
+        command = get_text(audio)
+
         if ACTIVATION_COMMAND in command.lower():
             print("Activated")
             play_sound("What can i do for you?")
 
-            note = audio_to_text()
+            note_audio = get_audio
+            note = get_text(note_audio)
+
             if note:
                 play_sound(note)
 
