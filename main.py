@@ -1,8 +1,18 @@
+from datetime import datetime
 import os
 import speech_recognition as sr
 import gtts 
 from playsound import playsound
+import configparser
+from notion import NotionClient
 
+config = configparser.RawConfigParser()
+config.read('config.ini')
+
+token = config['notion']['token']
+database = config['notion']['database']
+
+client = NotionClient(token,database)
 r = sr.Recognizer()
 ACTIVATION_COMMAND = "hello"
 
@@ -32,8 +42,6 @@ def play_sound(text):
     except AssertionError:
         print("Assertion error")
 
-    
-
 if __name__ == "__main__":
     while True:
         audio = get_audio()
@@ -43,11 +51,13 @@ if __name__ == "__main__":
             print("Activated")
             play_sound("What can i do for you?")
 
-            note_audio = get_audio
-            note = get_text(note_audio)
+            note = get_audio()
+            note = get_text(note)
 
-            if note:
-                play_sound(note)
+            now = datetime.now().astimezone().isoformat()
+            res = client.create_page(note,now)
+            if res.status_code == 200:
+                print("Stored data")
 
 
 
